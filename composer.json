@@ -1,0 +1,12 @@
+{
+	"name": "mackiavelly/yii2-module-trinititv",
+	"description": "CRUD for api trinitytv",
+	"autoload": {
+		"psr-4": {
+			"mackiavelly\\modules\\trinitytv\\": ""
+		}
+	},
+	"require": {
+		"mackiavelly/yii2-trinitytv": "dev-master"
+	}
+}
