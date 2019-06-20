@@ -14,4 +14,11 @@
  */
 return [
 	'Trinity TV' => 'Тринити ТВ',
+	'localid' => 'Договор партнера',
+	'subscrid' => 'Тариф',
+	'subscrprice' => 'Цена партнера',
+	'subscrstatusid' => 'Состояние',
+	'contracttrinity' => 'Договор тринити',
+	'devicescount' => 'Устройства',
+	'contractdate' => 'Дата создания',
 ];
