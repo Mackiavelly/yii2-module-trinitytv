@@ -2,6 +2,7 @@
 
 namespace mackiavelly\modules\trinitytv\models;
 
+use mackiavelly\modules\trinitytv\TrinitytvModule;
 use mackiavelly\trinitytv\TrinityApi;
 use Yii;
 use yii\base\Model;
@@ -31,5 +32,20 @@ class Trinitytv extends Model {
 	public function findAllTvUsers() {
 		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
 		return $trinityApi->subscriberList();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function attributeLabels() {
+		return [
+			'localid'         => TrinitytvModule::t('app', 'Contract Partner'),
+			'subscrid'        => TrinitytvModule::t('app', 'Tariff'),
+			'subscrprice'     => TrinitytvModule::t('app', 'Tariff Price'),
+			'subscrstatusid'  => TrinitytvModule::t('app', 'Status'),
+			'contracttrinity' => TrinitytvModule::t('app', 'Contract Trinity'),
+			'devicescount'    => TrinitytvModule::t('app', 'Devices Count'),
+			'contractdate'    => TrinitytvModule::t('app', 'Contract Date'),
+		];
 	}
 }

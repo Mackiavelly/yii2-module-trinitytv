@@ -13,12 +13,12 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-	'Trinity TV' => 'Тринити ТВ',
-	'localid' => 'Договор партнера',
-	'subscrid' => 'Тариф',
-	'subscrprice' => 'Цена партнера',
-	'subscrstatusid' => 'Состояние',
-	'contracttrinity' => 'Договор тринити',
-	'devicescount' => 'Устройства',
-	'contractdate' => 'Дата создания',
+	'Trinity TV'       => 'Тринити ТВ',
+	'Contract Partner' => 'Договор Партнера',
+	'Tariff'           => 'Тариф',
+	'Tariff Price'     => 'Цена тарифа',
+	'Status'           => 'Состояние',
+	'Contract Trinity' => 'Договор Тринити',
+	'Devices Count'    => 'Устройства',
+	'Contract Date'    => 'Дата создания',
 ];
