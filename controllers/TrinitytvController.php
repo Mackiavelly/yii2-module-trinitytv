@@ -3,6 +3,7 @@
 namespace mackiavelly\modules\trinitytv\controllers;
 
 use mackiavelly\modules\trinitytv\models\Trinitytv;
+use Yii;
 use yii\web\Controller;
 
 /**
@@ -15,8 +16,11 @@ class TrinitytvController extends Controller {
 	 * @return string
 	 */
 	public function actionIndex() {
+		$model = new Trinitytv();
+		$dataProvider = $model->search(Yii::$app->request->get());
 		return $this->render('index', [
-			'dataProvider' => (new Trinitytv)->buildAllTvUsersProvider(),
+			'dataProvider' => $dataProvider,
+			'filterModel'  => $model,
 		]);
 	}
 }

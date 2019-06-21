@@ -21,4 +21,12 @@ return [
 	'Contract Trinity' => 'Договор Тринити',
 	'Devices Count'    => 'Устройства',
 	'Contract Date'    => 'Дата создания',
+	'No device'        => 'Без устройств',
+	'One device'       => 'Одно устройство',
+	'Two devices'      => 'Два устройства',
+	'Three devices'    => 'Три Устройства',
+	'Four devices'     => 'Четыре устройства',
+	'Active'           => 'Активный',
+	'Block'            => 'Заблокирован',
+	'Rows per page'    => 'Записей на страницу',
 ];

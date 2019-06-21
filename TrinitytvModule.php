@@ -29,16 +29,6 @@ class TrinitytvModule extends Module {
 	 * @return string
 	 */
 	public static function t($category, $message, $params = [], $language = null) {
-		if (!isset(Yii::$app->i18n->translations['modules/trinitytv/*'])) {
-			Yii::$app->i18n->translations['modules/trinitytv/*'] = [
-				'class'          => 'yii\i18n\PhpMessageSource',
-				'sourceLanguage' => 'en-US',
-				'basePath'       => '@vendor/mackiavelly/yii2-module-trinitytv/messages',
-				'fileMap'        => [
-					'modules/trinitytv/app' => 'app.php',
-				],
-			];
-		}
 		return Yii::t('modules/trinitytv/'.$category, $message, $params, $language);
 	}
 
@@ -47,7 +37,19 @@ class TrinitytvModule extends Module {
 	 */
 	public function init() {
 		parent::init();
+		$this->registerTranslations();
+	}
 
-		// custom initialization code goes here
+	public function registerTranslations() {
+		if (!isset(Yii::$app->i18n->translations['modules/trinitytv/*'])) {
+			Yii::$app->i18n->translations['modules/trinitytv/*'] = [
+				'class'          => 'yii\i18n\PhpMessageSource',
+				'sourceLanguage' => 'en-US',
+				'basePath'       => __DIR__.'/messages',
+				'fileMap'        => [
+					'modules/trinitytv/trinitytv' => 'trinitytv.php',
+				],
+			];
+		}
 	}
 }
