@@ -45,3 +45,5 @@ Yii::$app->params['trinitytv'] = [
 	],
 ],
 ```
+
+![alt screenShot-index](screen0.png)
