@@ -2,6 +2,7 @@
 
 use mackiavelly\modules\trinitytv\models\Trinitytv;
 use mackiavelly\modules\trinitytv\TrinitytvModule;
+use yii\bootstrap\Modal;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -13,12 +14,39 @@ use yii\widgets\Pjax;
 
 
 $this->title = TrinitytvModule::t('trinitytv', 'Trinity TV');
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 
 Pjax::begin([
 	'id'      => 'pjax-trinity-index',
 	'timeout' => 5000,
 ]);
+if (!empty($alert = Yii::$app->session->get('trinitytv-alert'))) {
+	Yii::$app->session->remove('trinitytv-alert');
+	if ($alert['result'] == 'success') {
+		$text = TrinitytvModule::t('trinitytv', 'Action success!');
+		$color = 'success';
+	} else {
+		$text = TrinitytvModule::t('trinitytv', 'Error! ').$alert['result'];
+		$color = 'danger';
+	}
+	$debugButton = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-eye-close']), [
+		'class' => 'btn btn-default btn-xs btn-'.$color,
+		'title' => TrinitytvModule::t('trinitytv', 'Debug'),
+		'data'  => [
+			'toggle' => 'collapse',
+			'target' => '#collapse-trinitytv',
+		],
+	]);
+	$debugResponse = Html::tag('div', '<br>'.Html::tag('pre', print_r($alert, true)), [
+		'class' => 'collapse',
+		'id'    => 'collapse-trinitytv',
+	]);
+	$closeButton = Html::button('&times;', ['class' => 'close', 'data-dismiss' => 'alert']);
+	echo Html::tag('div', $debugButton.' ['.date('H:i:s').'] '.$text.$closeButton.$debugResponse, [
+		'class' => 'alert alert-'.$color.' alert-dismissible',
+		'role'  => 'alert',
+	]);
+}
 $pages = range(10, 100, 10);
 $perPage = Html::tag('div', TrinitytvModule::t('trinitytv', 'Rows per page'), [
 		'class' => 'col-xs-2 form-control-static',
@@ -33,6 +61,7 @@ $perPage = Html::tag('div', TrinitytvModule::t('trinitytv', 'Rows per page'), [
 ?>
 	<div class="trinitytv-index">
 		<?= GridView::widget([
+			'id'             => 'grid-users',
 			'dataProvider'   => $dataProvider,
 			'filterModel'    => $filterModel,
 			'filterSelector' => '#trinitytv-perpage',
@@ -60,22 +89,40 @@ $perPage = Html::tag('div', TrinitytvModule::t('trinitytv', 'Rows per page'), [
 				],
 				[
 					'attribute' => 'subscrid',
+					'format'    => 'raw',
 					'filter'    => Yii::$app->params['trinitytv']['serviceId'],
 					'value'     => function($model) {
-						return Yii::$app->params['trinitytv']['serviceId'][$model['subscrid']];
+						$button = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-pencil']), [
+							'class' => 'btn btn-xs btn-primary trinitytv-modal',
+							'data'  => [
+								'url'   => Url::to(['tariff'] + $model),
+								'model' => $model,
+							],
+							'title' => TrinitytvModule::t('trinitytv', 'Change Tariff'),
+						]);
+						$tariff = Yii::$app->params['trinitytv']['serviceId'][$model['subscrid']] ?? null;
+						return $tariff != null ? $button.' '.$tariff : null;
 					},
 				],
-				//'subscrprice',
 				[
 					'attribute' => 'subscrstatusid',
 					'filter'    => $filterModel->getStatus(),
 					'format'    => 'raw',
 					'value'     => function($model) {
-						return Html::tag('span', TrinitytvModule::t('trinitytv', Trinitytv::STATUS[$model['subscrstatusid']]['name']), ['class' => Trinitytv::STATUS[$model['subscrstatusid']]['class']]);
+						$button = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-off']), [
+							'class' => 'btn btn-xs btn-warning trinitytv-modal',
+							'data'  => [
+								'url'   => Url::to(['state'] + $model),
+								'model' => $model,
+							],
+							'title' => TrinitytvModule::t('trinitytv', 'Enable/Disable'),
+						]);
+						return $button.' '.Html::tag('span', TrinitytvModule::t('trinitytv', Trinitytv::STATUS[$model['subscrstatusid']]['name']), ['class' => Trinitytv::STATUS[$model['subscrstatusid']]['class']]);
 					},
 				],
 				[
 					'attribute' => 'devicescount',
+					'format'    => 'raw',
 					'filter'    => [
 						0 => TrinitytvModule::t('trinitytv', 'No device'),
 						1 => TrinitytvModule::t('trinitytv', 'One device'),
@@ -83,19 +130,86 @@ $perPage = Html::tag('div', TrinitytvModule::t('trinitytv', 'Rows per page'), [
 						3 => TrinitytvModule::t('trinitytv', 'Three devices'),
 						4 => TrinitytvModule::t('trinitytv', 'Four devices'),
 					],
+					'value'     => function($model) {
+						$button[] = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-plus']).' CODE', [
+							'class' => 'btn btn-xs btn-success trinitytv-modal',
+							'data'  => [
+								'url'   => Url::to(['add-device-code'] + $model),
+								'model' => $model,
+							],
+							'title' => TrinitytvModule::t('trinitytv', 'Add Device by Code'),
+						]);
+						$button[] = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-plus']).' MAC/UUID', [
+							'class' => 'btn btn-xs btn-success trinitytv-modal',
+							'data'  => [
+								'url'   => Url::to(['add-device'] + $model),
+								'model' => $model,
+							],
+							'title' => TrinitytvModule::t('trinitytv', 'Add Device'),
+						]);
+						$buttonCount = $model['devicescount'];
+						return Html::tag('div', implode('', $button), ['class' => 'btn-group']).' '.$buttonCount;
+					},
 				],
 				[
 					'attribute'          => 'contractdate',
 					'filterInputOptions' => ['class' => 'form-control', 'autocomplete' => 'off'],
 				],
-				/*[
-					'class'      => 'yii\grid\ActionColumn',
-					'urlCreator' => function($action, $model) {
-						return Url::to([$action, 'id' => $model['localid']]);
+				[
+					'class'         => 'yii\grid\ActionColumn',
+					'header'        => TrinitytvModule::t('trinitytv', 'Actions'),
+					'template'      => '<div class="btn-group" role="group" aria-label="trinitytv-actions">{user-info}{full-info}</div>',
+					'urlCreator'    => function($action, $model) {
+						return Url::to([$action] + $model);
 					},
-				],*/
+					'buttonOptions' => ['class' => 'trinitytv-modal'],
+					'buttons'       => [
+						'user-info' => function($url, $model) {
+							return Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-user']), [
+								'class' => 'btn btn-xs btn-info trinitytv-modal',
+								'data'  => [
+									'url'   => $url,
+									'model' => $model,
+								],
+								'title' => TrinitytvModule::t('trinitytv', 'Change User Info'),
+							]);
+						},
+						'full-info' => function($url, $model) {
+							return Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-cog']), [
+								'class' => 'btn btn-xs btn-info trinitytv-modal',
+								'data'  => [
+									'url'   => $url,
+									'model' => $model,
+								],
+								'title' => TrinitytvModule::t('trinitytv', 'Show Full User Info'),
+							]);
+						},
+					],
+				],
 			],
 		]); ?>
 	</div>
 <?php
 Pjax::end();
+echo Modal::widget([
+	'id'      => 'modal-trinitytv',
+	'options' => [
+		'data' => [
+			/*'keyboard' => false,*/
+			'backdrop' => 'static',
+		],
+	],
+	'size'    => Modal::SIZE_LARGE,
+]);
+$js = <<< JS
+$(document).on('click', '.trinitytv-modal', function () {
+	let	close = '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>',
+		modal = $('#modal-trinitytv'),
+		element = $(this),
+		data = element.data();
+	modal.find('.modal-header').html('<h4>'+element.attr('title')+': '+data.model.localid+close+'</h4>');
+	modal.find('.modal-body').html('...').load(data.url);
+	modal.modal('show');
+});
+JS;
+$this->registerJs($js);

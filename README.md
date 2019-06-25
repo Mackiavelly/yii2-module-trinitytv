@@ -1,4 +1,5 @@
-# trinitytv
+Yii2-module-trinitytv
+---------------------
 Yii2 module for Trinity TV API
 
 
@@ -20,3 +21,27 @@ or add
 ```
 
 to the require section of your `composer.json` file.
+
+Config
+------
+
+```
+Yii::$app->params['trinitytv'] = [
+	'partnerId' => 'partnerId',
+	'salt'      => 'salt',
+	'serviceId' => [
+		20 => 'Тест',
+		30 => 'Минимальный',
+		40 => 'Средний премиум',
+		50 => 'Максимальный премиум',
+	],
+];
+```
+
+```
+'modules' => [
+	'trinitytv' => [
+		'class' => mackiavelly\modules\trinitytv\TrinitytvModule::class,
+	],
+],
+```

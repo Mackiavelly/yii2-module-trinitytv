@@ -15,14 +15,18 @@ class Trinitytv extends Model {
 		0   => ['name' => 'Active', 'class' => 'text-success'],
 		768 => ['name' => 'Block', 'class' => 'text-danger'],
 	];
+	public static $cacheExpire = 60;
 
 	public $localid;
 	public $subscrid;
+	public $subscrname;
 	public $subscrprice;
 	public $subscrstatusid;
+	public $subscrstatus;
 	public $contracttrinity;
 	public $devicescount;
 	public $contractdate;
+	public $devices = [];
 	public $perpage = 10;
 
 	private $_filtered = false;
@@ -43,8 +47,9 @@ class Trinitytv extends Model {
 
 	public function rules() {
 		return [
-			[['contractdate', 'localid', 'contracttrinity', 'subscrprice',], 'string'],
+			[['contractdate', 'localid', 'contracttrinity', 'subscrprice', 'subscrname', 'subscrstatus'], 'string'],
 			[['subscrid', 'subscrstatusid', 'devicescount', 'perpage'], 'integer'],
+			[['devices'], 'safe'],
 		];
 	}
 
@@ -96,32 +101,29 @@ class Trinitytv extends Model {
 	 * @return bool|mixed
 	 */
 	public function findAllTvUsers() {
-		$data = Yii::$app->cache->getOrSet('trinitytv', function() {
-			$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
-			$data = $trinityApi->subscriberList();
-			if ($data['result'] == 'success') {
-				foreach ($data['subscribers'] as $index => &$datum) {
-					$datum['localid'] = $index;
-				}
-				return $data['subscribers'];
-			} else {
-				return [];
-			}
-		}, 60);
+		if (Yii::$app->session->get('trinitytv-cache') === false) {
+			$data = $this->buildTrinitytvData();
+			Yii::$app->cache->set('trinitytv-data', $data, $this::$cacheExpire);
+		} else {
+			$data = Yii::$app->cache->getOrSet('trinitytv-data', function() {
+				return $this->buildTrinitytvData();
+			}, $this::$cacheExpire);
+		}
+		Yii::$app->session->set('trinitytv-cache', true);
 		return $data;
 	}
 
-	/**
-	 * @return ArrayDataProvider
-	 */
-	public function buildAllTvUsersProvider() {
-		return new ArrayDataProvider([
-			'allModels'  => $this->findAllTvUsers(),
-			'modelClass' => self::class,
-			'sort'       => [
-				'attributes' => $this->attributes(),
-			],
-		]);
+	public function buildTrinitytvData() {
+		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
+		$data = $trinityApi->subscriberList();
+		if ($data['result'] == 'success') {
+			foreach ($data['subscribers'] as $index => &$datum) {
+				$datum['localid'] = $index;
+			}
+			return $data['subscribers'];
+		} else {
+			return [];
+		}
 	}
 
 	/**
@@ -131,11 +133,31 @@ class Trinitytv extends Model {
 		return [
 			'localid'         => TrinitytvModule::t('trinitytv', 'Contract Partner'),
 			'subscrid'        => TrinitytvModule::t('trinitytv', 'Tariff'),
+			'subscrname'      => TrinitytvModule::t('trinitytv', 'Tariff Name'),
 			'subscrprice'     => TrinitytvModule::t('trinitytv', 'Tariff Price'),
-			'subscrstatusid'  => TrinitytvModule::t('trinitytv', 'Status'),
+			'subscrstatusid'  => TrinitytvModule::t('trinitytv', 'State'),
+			'subscrstatus'    => TrinitytvModule::t('trinitytv', 'State Name'),
 			'contracttrinity' => TrinitytvModule::t('trinitytv', 'Contract Trinity'),
 			'devicescount'    => TrinitytvModule::t('trinitytv', 'Devices Count'),
 			'contractdate'    => TrinitytvModule::t('trinitytv', 'Contract Date'),
+			'devices'         => TrinitytvModule::t('trinitytv', 'Devices'),
 		];
+	}
+
+	public function fullInfo() {
+		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
+		$response = $trinityApi->subscriptionInfo($this->localid);
+		if ($response['result'] == 'success') {
+			$this->load($response['subscriptions'], '');
+			if ($this->devicescount != 0) {
+				$response = $trinityApi->deviceList($this->localid);
+				if ($response['result'] == 'success') {
+					$this->devices = $response['devices'];
+				}
+			} else {
+				$this->devices = [];
+			}
+		}
+		return $this;
 	}
 }
