@@ -68,4 +68,9 @@ class TrinitytvDevice extends Model {
 		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
 		return $trinityApi->deleteDevice($this->localid, $this->mac, $this->uuid);
 	}
+
+	public function addPlayList() {
+		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
+		return $trinityApi->getPlayList($this->localid);
+	}
 }

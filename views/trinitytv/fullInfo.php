@@ -23,6 +23,33 @@ echo DetailView::widget([
 			'label'     => TrinitytvModule::t('trinitytv', 'Device List'),
 			'format'    => 'raw',
 			'value'     => function($model) {
+				/**
+				 * @var $model \mackiavelly\modules\trinitytv\models\Trinitytv
+				 */
+				$button[] = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-plus']).' CODE', [
+					'class' => 'btn btn-xs btn-success trinitytv-modal',
+					'data'  => [
+						'url'   => Url::to(['add-device-code'] + $model->toArray()),
+						'model' => $model->toArray(),
+					],
+					'title' => TrinitytvModule::t('trinitytv', 'Add Device by Code'),
+				]);
+				$button[] = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-plus']).' MAC/UUID', [
+					'class' => 'btn btn-xs btn-success trinitytv-modal',
+					'data'  => [
+						'url'   => Url::to(['add-device'] + $model->toArray()),
+						'model' => $model->toArray(),
+					],
+					'title' => TrinitytvModule::t('trinitytv', 'Add Device'),
+				]);
+				$button[] = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-plus']).' '.TrinitytvModule::t('trinitytv', 'Playlist'), [
+					'class' => 'btn btn-xs btn-success trinitytv-modal',
+					'data'  => [
+						'url'   => Url::to(['add-play-list'] + $model->toArray()),
+						'model' => $model->toArray(),
+					],
+					'title' => TrinitytvModule::t('trinitytv', 'Add Playlist'),
+				]);
 				return GridView::widget([
 					'id'           => 'grid-user-devices',
 					'dataProvider' => new ArrayDataProvider([
@@ -33,7 +60,7 @@ echo DetailView::widget([
 					'tableOptions' => [
 						'class' => 'table table-bordered table-hover table-responsive table-condensed',
 					],
-					'layout'       => '{items}',
+					'layout'       => '<p><div class="btn-group" role="group" aria-label="trinitytv-actions">'.implode($button).'</div></p>{items}',
 					'columns'      => [
 						['class' => 'yii\grid\SerialColumn'],
 						'mac',

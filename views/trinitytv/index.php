@@ -147,6 +147,14 @@ $perPage = Html::tag('div', TrinitytvModule::t('trinitytv', 'Rows per page'), [
 							],
 							'title' => TrinitytvModule::t('trinitytv', 'Add Device'),
 						]);
+						$button[] = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-plus']).' '.TrinitytvModule::t('trinitytv', 'Playlist'), [
+							'class' => 'btn btn-xs btn-success trinitytv-modal',
+							'data'  => [
+								'url'   => Url::to(['add-play-list'] + $model),
+								'model' => $model,
+							],
+							'title' => TrinitytvModule::t('trinitytv', 'Add Playlist'),
+						]);
 						$buttonCount = $model['devicescount'];
 						return Html::tag('div', implode('', $button), ['class' => 'btn-group']).' '.$buttonCount;
 					},

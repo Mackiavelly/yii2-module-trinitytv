@@ -128,7 +128,7 @@ class TrinitytvController extends Controller {
 		$get = Yii::$app->request->get();
 		$model = new TrinitytvDevice();
 		$model->load($get, '');
-		Yii::warning($model->deleteDevice());
+		$model->deleteDevice();
 		return $this->actionFullInfo();
 	}
 
@@ -139,5 +139,13 @@ class TrinitytvController extends Controller {
 		return $this->renderAjax('fullInfo', [
 			'model' => $model->fullInfo(),
 		]);
+	}
+
+	public function actionAddPlayList() {
+		$get = Yii::$app->request->get();
+		$model = new TrinitytvDevice();
+		$model->load($get, '');
+		$model->addPlayList();
+		return $this->actionFullInfo();
 	}
 }

@@ -50,4 +50,6 @@ return [
 	'Devices'                                            => 'Устройства',
 	'Device List'                                        => 'Список устройств',
 	'Show Full User Info'                                => 'Полная информация по пользователю',
+	'Add Playlist'                                       => 'Добавить плэйлист',
+	'Playlist'                                           => 'Плэйлист',
 ];
