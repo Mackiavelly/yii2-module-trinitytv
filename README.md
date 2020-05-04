@@ -27,7 +27,7 @@ Config
 
 ```
 Yii::$app->params['trinitytv'] = [
-    'debug'     => false,
+	'debug'     => false,
 	'partnerId' => 'partnerId',
 	'salt'      => 'salt',
 	'serviceId' => [
