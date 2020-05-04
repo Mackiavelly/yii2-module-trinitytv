@@ -33,7 +33,7 @@ return [
 	'First Name'                                         => 'Имя',
 	'Last Name'                                          => 'Фамилия',
 	'Middle Name'                                        => 'Отчество',
-	'Address'                                            => 'Город',
+	'Address'                                            => 'Адресс',
 	'Actions'                                            => 'Действия',
 	'At least 1 of the field must be filled up properly' => 'Как минимум 1 поле должно быть заполнено правильно',
 	'Add Device'                                         => 'Добавить устройство',
@@ -52,4 +52,7 @@ return [
 	'Show Full User Info'                                => 'Полная информация по пользователю',
 	'Add Playlist'                                       => 'Добавить плэйлист',
 	'Playlist'                                           => 'Плэйлист',
+	'Balance'                                            => 'Баланс',
+	'Note'                                               => 'Заметки',
+	'Last Session Date'                                  => 'Последняя активность',
 ];

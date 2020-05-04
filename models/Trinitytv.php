@@ -27,6 +27,13 @@ class Trinitytv extends Model {
 	public $devicescount;
 	public $contractdate;
 	public $devices = [];
+	public $last_session_date;
+	public $note;
+	public $middlename;
+	public $name;
+	public $lastname;
+	public $address;
+	public $balance;
 	public $perpage = 10;
 
 	private $_filtered = false;
@@ -49,7 +56,7 @@ class Trinitytv extends Model {
 		return [
 			[['contractdate', 'localid', 'contracttrinity', 'subscrprice', 'subscrname', 'subscrstatus'], 'string'],
 			[['subscrid', 'subscrstatusid', 'devicescount', 'perpage'], 'integer'],
-			[['devices'], 'safe'],
+			[['devices', 'last_session_date', 'note', 'middlename', 'name', 'lastname', 'address', 'balance'], 'safe'],
 		];
 	}
 
@@ -131,16 +138,23 @@ class Trinitytv extends Model {
 	 */
 	public function attributeLabels() {
 		return [
-			'localid'         => TrinitytvModule::t('trinitytv', 'Contract Partner'),
-			'subscrid'        => TrinitytvModule::t('trinitytv', 'Tariff'),
-			'subscrname'      => TrinitytvModule::t('trinitytv', 'Tariff Name'),
-			'subscrprice'     => TrinitytvModule::t('trinitytv', 'Tariff Price'),
-			'subscrstatusid'  => TrinitytvModule::t('trinitytv', 'State'),
-			'subscrstatus'    => TrinitytvModule::t('trinitytv', 'State Name'),
-			'contracttrinity' => TrinitytvModule::t('trinitytv', 'Contract Trinity'),
-			'devicescount'    => TrinitytvModule::t('trinitytv', 'Devices Count'),
-			'contractdate'    => TrinitytvModule::t('trinitytv', 'Contract Date'),
-			'devices'         => TrinitytvModule::t('trinitytv', 'Devices'),
+			'localid'           => TrinitytvModule::t('trinitytv', 'Contract Partner'),
+			'subscrid'          => TrinitytvModule::t('trinitytv', 'Tariff'),
+			'subscrname'        => TrinitytvModule::t('trinitytv', 'Tariff Name'),
+			'subscrprice'       => TrinitytvModule::t('trinitytv', 'Tariff Price'),
+			'subscrstatusid'    => TrinitytvModule::t('trinitytv', 'State'),
+			'subscrstatus'      => TrinitytvModule::t('trinitytv', 'State Name'),
+			'contracttrinity'   => TrinitytvModule::t('trinitytv', 'Contract Trinity'),
+			'devicescount'      => TrinitytvModule::t('trinitytv', 'Devices Count'),
+			'contractdate'      => TrinitytvModule::t('trinitytv', 'Contract Date'),
+			'devices'           => TrinitytvModule::t('trinitytv', 'Devices'),
+			'last_session_date' => TrinitytvModule::t('trinitytv', 'Last Session Date'),
+			'note'              => TrinitytvModule::t('trinitytv', 'Note'),
+			'middlename'        => TrinitytvModule::t('trinitytv', 'Middle Name'),
+			'name'              => TrinitytvModule::t('trinitytv', 'First Name'),
+			'lastname'          => TrinitytvModule::t('trinitytv', 'Last Name'),
+			'address'           => TrinitytvModule::t('trinitytv', 'Address'),
+			'balance'           => TrinitytvModule::t('trinitytv', 'Balance'),
 		];
 	}
 

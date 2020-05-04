@@ -1,5 +1,6 @@
 <?php
 
+use mackiavelly\modules\trinitytv\models\Trinitytv;
 use mackiavelly\modules\trinitytv\TrinitytvModule;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
@@ -10,6 +11,9 @@ use yii\widgets\DetailView;
 echo DetailView::widget([
 	'id'         => 'detail-user',
 	'model'      => $model,
+	'options'    => [
+		'class' => 'table table-striped table-bordered table-hover table-responsive table-condensed detail-view',
+	],
 	'attributes' => [
 		'localid',
 		'contracttrinity',
@@ -18,13 +22,32 @@ echo DetailView::widget([
 		'subscrstatus',
 		'contractdate',
 		'devicescount',
+		'last_session_date',
+		'note',
+		'middlename',
+		'name',
+		[
+			'attribute' => 'lastname',
+			'format'    => 'raw',
+			'value'     => function($model) {
+				/**
+				 * @var $model Trinitytv
+				 */
+				if (isset(Yii::$app->params['trinitytv']['debug']) && Yii::$app->params['trinitytv']['debug'] === 'mack') {
+					return app\components\Helper::buildUserBillingLink([$model->middlename, $model->lastname]);
+				}
+				return $model->lastname;
+			},
+		],
+		'address',
+		'balance',
 		[
 			'attribute' => 'devices',
 			'label'     => TrinitytvModule::t('trinitytv', 'Device List'),
 			'format'    => 'raw',
 			'value'     => function($model) {
 				/**
-				 * @var $model \mackiavelly\modules\trinitytv\models\Trinitytv
+				 * @var $model Trinitytv
 				 */
 				$button[] = Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-plus']).' CODE', [
 					'class' => 'btn btn-xs btn-success trinitytv-modal',
