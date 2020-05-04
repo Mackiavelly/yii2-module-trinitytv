@@ -23,7 +23,6 @@ echo DetailView::widget([
 		'contractdate',
 		'devicescount',
 		'last_session_date',
-		'note',
 		'middlename',
 		'name',
 		[
@@ -41,6 +40,7 @@ echo DetailView::widget([
 		],
 		'address',
 		'balance',
+		'note',
 		[
 			'attribute' => 'devices',
 			'label'     => TrinitytvModule::t('trinitytv', 'Device List'),
