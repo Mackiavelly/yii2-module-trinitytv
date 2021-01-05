@@ -5,6 +5,7 @@ namespace mackiavelly\modules\trinitytv\controllers;
 use mackiavelly\modules\trinitytv\models\Trinitytv;
 use mackiavelly\modules\trinitytv\models\TrinitytvDevice;
 use mackiavelly\modules\trinitytv\models\TrinitytvDeviceCode;
+use mackiavelly\modules\trinitytv\models\TrinitytvDeviceNote;
 use mackiavelly\modules\trinitytv\models\TrinitytvState;
 use mackiavelly\modules\trinitytv\models\TrinitytvTariff;
 use mackiavelly\modules\trinitytv\models\TrinitytvUserInfo;
@@ -17,6 +18,68 @@ use yii\widgets\ActiveForm;
  * Default controller for the `trinitytv` module
  */
 class TrinitytvController extends Controller {
+
+	public function actionAddDevice() {
+		$model = new TrinitytvDevice();
+		$get = Yii::$app->request->get();
+		if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+			if (Yii::$app->request->isAjax) {
+				Yii::warning(ActiveForm::validate($model));
+				return $this->asJson(ActiveForm::validate($model));
+			}
+			Yii::$app->session->set('trinitytv-alert', $model->addDevice());
+			Yii::$app->session->set('trinitytv-cache', false);
+			return $this->redirect(Url::previous());
+		}
+		$model->load($get, '');
+		return $this->renderAjax('addDevice', [
+			'model' => $model,
+		]);
+	}
+
+	public function actionAddDeviceCode() {
+		$model = new TrinitytvDeviceCode();
+		$get = Yii::$app->request->get();
+		if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+			if (Yii::$app->request->isAjax) {
+				Yii::warning(ActiveForm::validate($model));
+				return $this->asJson(ActiveForm::validate($model));
+			}
+			Yii::$app->session->set('trinitytv-alert', $model->addDeviceCode());
+			Yii::$app->session->set('trinitytv-cache', false);
+			return $this->redirect(Url::previous());
+		}
+		$model->load($get, '');
+		return $this->renderAjax('addDeviceCode', [
+			'model' => $model,
+		]);
+	}
+
+	public function actionAddPlayList() {
+		$get = Yii::$app->request->get();
+		$model = new TrinitytvDevice();
+		$model->load($get, '');
+		$model->addPlayList();
+		return $this->actionFullInfo();
+	}
+
+	public function actionDeleteDevice() {
+		$get = Yii::$app->request->get();
+		$model = new TrinitytvDevice();
+		$model->load($get, '');
+		$model->deleteDevice();
+		return $this->actionFullInfo();
+	}
+
+	public function  actionFullInfo() {
+		$model = new Trinitytv();
+		$model->load(Yii::$app->request->get(), '');
+		Yii::$app->session->set('trinitytv-cache', false);
+		return $this->renderAjax('fullInfo', [
+			'model' => $model->fullInfo(),
+		]);
+	}
+
 	/**
 	 * Renders the index view for the module
 	 *
@@ -36,7 +99,7 @@ class TrinitytvController extends Controller {
 	public function actionState() {
 		$model = new TrinitytvState();
 		$get = Yii::$app->request->get();
-		if ($model->load(Yii::$app->request->post())) {
+		if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
 			if (Yii::$app->request->isAjax) {
 				return $this->asJson(ActiveForm::validate($model));
 			}
@@ -55,7 +118,7 @@ class TrinitytvController extends Controller {
 	public function actionTariff() {
 		$model = new TrinitytvTariff();
 		$get = Yii::$app->request->get();
-		if ($model->load(Yii::$app->request->post())) {
+		if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
 			if (Yii::$app->request->isAjax) {
 				return $this->asJson(ActiveForm::validate($model));
 			}
@@ -74,7 +137,7 @@ class TrinitytvController extends Controller {
 	public function actionUserInfo() {
 		$model = new TrinitytvUserInfo();
 		$get = Yii::$app->request->get();
-		if ($model->load(Yii::$app->request->post())) {
+		if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
 			if (Yii::$app->request->isAjax) {
 				return $this->asJson(ActiveForm::validate($model));
 			}
@@ -88,64 +151,23 @@ class TrinitytvController extends Controller {
 		]);
 	}
 
-	public function actionAddDevice() {
-		$model = new TrinitytvDevice();
-		$get = Yii::$app->request->get();
-		if ($model->load(Yii::$app->request->post())) {
-			if (Yii::$app->request->isAjax) {
-				Yii::warning(ActiveForm::validate($model));
-				return $this->asJson(ActiveForm::validate($model));
-			}
-			Yii::$app->session->set('trinitytv-alert', $model->addDevice());
-			Yii::$app->session->set('trinitytv-cache', false);
-			return $this->redirect(Url::previous());
+	public function actionEditDeviceNote($submit = false) {
+		$model = new TrinitytvDeviceNote();
+		if (Yii::$app->request->isGet) {
+			$get = Yii::$app->request->get();
+			$model->load($get['devices'][$get['device_id']], '');
+			return $this->renderAjax('editDeviceNote', [
+				'model' => $model,
+			]);
 		}
-		$model->load($get, '');
-		return $this->renderAjax('addDevice', [
-			'model' => $model,
-		]);
-	}
-
-	public function actionAddDeviceCode() {
-		$model = new TrinitytvDeviceCode();
-		$get = Yii::$app->request->get();
-		if ($model->load(Yii::$app->request->post())) {
-			if (Yii::$app->request->isAjax) {
-				Yii::warning(ActiveForm::validate($model));
-				return $this->asJson(ActiveForm::validate($model));
+		if (Yii::$app->request->isPost && Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+			if ($submit) {
+				Yii::$app->session->set('trinitytv-alert', $model->editNote());
+				Yii::$app->session->set('trinitytv-cache', false);
+				return $this->actionFullInfo();
 			}
-			Yii::$app->session->set('trinitytv-alert', $model->addDeviceCode());
-			Yii::$app->session->set('trinitytv-cache', false);
-			return $this->redirect(Url::previous());
+			return $this->asJson(ActiveForm::validate($model));
 		}
-		$model->load($get, '');
-		return $this->renderAjax('addDeviceCode', [
-			'model' => $model,
-		]);
-	}
-
-	public function actionDeleteDevice() {
-		$get = Yii::$app->request->get();
-		$model = new TrinitytvDevice();
-		$model->load($get, '');
-		$model->deleteDevice();
-		return $this->actionFullInfo();
-	}
-
-	public function actionFullInfo() {
-		$model = new Trinitytv();
-		$model->load(Yii::$app->request->get(), '');
-		Yii::$app->session->set('trinitytv-cache', false);
-		return $this->renderAjax('fullInfo', [
-			'model' => $model->fullInfo(),
-		]);
-	}
-
-	public function actionAddPlayList() {
-		$get = Yii::$app->request->get();
-		$model = new TrinitytvDevice();
-		$model->load($get, '');
-		$model->addPlayList();
-		return $this->actionFullInfo();
+		return null;
 	}
 }

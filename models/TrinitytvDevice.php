@@ -11,8 +11,40 @@ use yii\base\Model;
 class TrinitytvDevice extends Model {
 
 	public $localid;
+
 	public $mac;
+
+	public $note;
+
 	public $uuid;
+
+	public function addDevice() {
+		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
+		//return $trinityApi->autorizeDevice($this->localid, $this->mac, $this->uuid);
+		return $trinityApi->autorizeDeviceNote($this->localid, $this->mac, $this->uuid, $this->note);
+	}
+
+	public function addPlayList() {
+		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
+		return $trinityApi->getPlayList($this->localid);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function attributeLabels() {
+		return [
+			'localid'   => TrinitytvModule::t('trinitytv', 'Contract Partner'),
+			'mac'       => TrinitytvModule::t('trinitytv', 'MAC'),
+			'uuid'      => TrinitytvModule::t('trinitytv', 'UUID'),
+			'note'      => TrinitytvModule::t('trinitytv', 'Note'),
+		];
+	}
+
+	public function deleteDevice() {
+		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
+		return $trinityApi->deleteDevice($this->localid, $this->mac, $this->uuid);
+	}
 
 	/**
 	 * {@inheritdoc}
@@ -27,17 +59,12 @@ class TrinitytvDevice extends Model {
 			[['uuid'], 'string', 'min' => 12, 'max' => 50],
 			[['uuid'], 'validateUuid'],
 			[['mac', 'uuid'], 'validateOne', 'skipOnEmpty' => false],
+			[['note'], 'string', 'max' => 50],
 		];
 	}
 
 	public function validateMac() {
-		if (!empty($this->mac) && !preg_match('/[0-9a-fA-F]{12}/', $this->mac)) {
-			$this->addError('mac', TrinitytvModule::t('trinitytv', 'No valid MAC-address'));
-		}
-	}
-
-	public function validateUuid() {
-		if (!empty($this->mac) && !preg_match('/[-0-9a-zA-Z]{12,50}/', $this->mac)) {
+		if (!empty($this->mac) && !preg_match('/[0-9a-f]{12}/i', $this->mac)) {
 			$this->addError('mac', TrinitytvModule::t('trinitytv', 'No valid MAC-address'));
 		}
 	}
@@ -48,29 +75,9 @@ class TrinitytvDevice extends Model {
 		}
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function attributeLabels() {
-		return [
-			'localid' => TrinitytvModule::t('trinitytv', 'Contract Partner'),
-			'mac'     => TrinitytvModule::t('trinitytv', 'MAC'),
-			'uuid'    => TrinitytvModule::t('trinitytv', 'UUID'),
-		];
-	}
-
-	public function addDevice() {
-		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
-		return $trinityApi->autorizeDevice($this->localid, $this->mac, $this->uuid);
-	}
-
-	public function deleteDevice() {
-		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
-		return $trinityApi->deleteDevice($this->localid, $this->mac, $this->uuid);
-	}
-
-	public function addPlayList() {
-		$trinityApi = new TrinityApi(Yii::$app->params['trinitytv']);
-		return $trinityApi->getPlayList($this->localid);
+	public function validateUuid() {
+		if (!empty($this->mac) && !preg_match('/[-0-9a-z]{12,50}/i', $this->mac)) {
+			$this->addError('mac', TrinitytvModule::t('trinitytv', 'No valid MAC-address'));
+		}
 	}
 }

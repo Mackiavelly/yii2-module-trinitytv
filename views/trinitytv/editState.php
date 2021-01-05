@@ -5,6 +5,8 @@ use mackiavelly\modules\trinitytv\TrinitytvModule;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
+/* @var $model \mackiavelly\modules\trinitytv\models\TrinitytvState */
+
 $form = ActiveForm::begin([
 	'id'                     => 'edit-state',
 	'enableAjaxValidation'   => true,

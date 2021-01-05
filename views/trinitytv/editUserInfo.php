@@ -3,6 +3,8 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
+/* @var $model \mackiavelly\modules\trinitytv\models\TrinitytvUserInfo */
+
 $form = ActiveForm::begin([
 	'id'                     => 'edit-user-info',
 	'enableAjaxValidation'   => true,
@@ -10,7 +12,6 @@ $form = ActiveForm::begin([
 ]);
 
 echo Html::activeHiddenInput($model, 'localid');
-
 
 echo $form->field($model, 'firstName');
 
