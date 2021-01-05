@@ -8,6 +8,9 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
+/** @var object $model */
+Yii::debug($model->toArray());
+
 echo DetailView::widget([
 	'id'         => 'detail-user',
 	'model'      => $model,
@@ -23,7 +26,6 @@ echo DetailView::widget([
 		'contractdate',
 		'devicescount',
 		'last_session_date',
-		'note',
 		'middlename',
 		'name',
 		[
@@ -41,6 +43,7 @@ echo DetailView::widget([
 		],
 		'address',
 		'balance',
+		'note',
 		[
 			'attribute' => 'devices',
 			'label'     => TrinitytvModule::t('trinitytv', 'Device List'),
@@ -88,19 +91,31 @@ echo DetailView::widget([
 						['class' => 'yii\grid\SerialColumn'],
 						'mac',
 						'uuid',
+						'note',
 						[
 							'label'  => Yii::t('app', 'Delete'),
 							'format' => 'raw',
-							'value'  => function($device) use ($model) {
+							'value'  => function($device, $key) use ($model) {
 								$modelArray = $model->toArray();
-								return Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-trash']), [
-									'title' => Yii::t('yii', 'Delete'),
-									'class' => 'btn btn-xs btn-danger trinitytv-delete-device',
+								$result = Html::beginTag('div', ['class' => 'btn-group', 'role' => 'group']);
+								$result .= Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-pencil']), [
+									'title' => TrinitytvModule::t('trinitytv', 'Edit Note'),
+									'class' => 'btn btn-xs btn-info trinitytv-edit-device-note',
 									'data'  => [
-										'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-										'url'     => Url::to(['delete-device'] + $modelArray + $device),
+										'url'     => Url::to(['edit-device-note'] + $modelArray + ['device_id' => $key]),
 									],
 								]);
+								$result .= Html::button(Html::tag('span', null, ['class' => 'glyphicon glyphicon-trash']), [
+									'title' => TrinitytvModule::t('trinitytv', 'Delete'),
+									'class' => 'btn btn-xs btn-danger trinitytv-delete-device',
+									'data'  => [
+										'confirm_msg' => TrinitytvModule::t('trinitytv', 'Are you sure you want to delete this item?'),
+										'url'        => Url::to(['delete-device'] + $modelArray + $device),
+										'localid' => $model->localid,
+									],
+								]);
+								$result .= Html::endTag('div');
+								return $result;
 							},
 						],
 					],
@@ -116,9 +131,21 @@ $('.trinitytv-delete-device').click(function() {
 		element = $(this),
 		data = element.data();
 	console.log(data);
-	modal.find('.modal-body').html('...').load(data.url, function() {
-	  $.pjax.reload({container: '#pjax-trinity-index'});
-	});
+	if (confirm(data.confirm_msg)) {
+		modal.find('.modal-body').html('...').load(data.url, function() {
+			let countTag = $('#devicescount-'+data.localid),
+			count = countTag.html();
+			countTag.html(count-1);
+		});
+		modal.modal('show');
+	}
+});
+$('.trinitytv-edit-device-note').click(function() {
+	let	modal = $('#modal-trinitytv'),
+		element = $(this),
+		data = element.data();
+	console.log(data);
+	modal.find('.modal-body').html('...').load(data.url);
 	modal.modal('show');
 });
 JS;

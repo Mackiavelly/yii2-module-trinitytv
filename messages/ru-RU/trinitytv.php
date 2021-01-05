@@ -55,4 +55,10 @@ return [
 	'Balance'                                            => 'Баланс',
 	'Note'                                               => 'Заметки',
 	'Last Session Date'                                  => 'Последняя активность',
+	'UUID'                                               => 'UUID',
+	'Code'                                               => 'Код',
+	'MAC'                                                => 'MAC',
+	'Delete'                                             => 'Удалить',
+	'Edit Note'                                          => 'Изменить заметку',
+	'Are you sure you want to delete this item?'         => 'Вы уверены, что хотите удалить данный элемент?',
 ];

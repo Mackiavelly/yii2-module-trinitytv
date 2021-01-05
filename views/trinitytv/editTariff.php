@@ -4,6 +4,8 @@ use mackiavelly\modules\trinitytv\TrinitytvModule;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
+/* @var $model \mackiavelly\modules\trinitytv\models\TrinitytvTariff */
+
 $form = ActiveForm::begin([
 	'id'                     => 'edit-tariff',
 	'enableAjaxValidation'   => true,

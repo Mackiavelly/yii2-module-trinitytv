@@ -17,8 +17,8 @@ $this->title = TrinitytvModule::t('trinitytv', 'Trinity TV');
 $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 
 Pjax::begin([
-	'id'      => 'pjax-trinity-index',
-	'timeout' => 5000,
+	'id' => 'pjax-trinity-index',
+	'timeout' => 10000,
 ]);
 if (!empty($alert = Yii::$app->session->get('trinitytv-alert'))) {
 	Yii::$app->session->remove('trinitytv-alert');
@@ -155,7 +155,7 @@ $perPage = Html::tag('div', TrinitytvModule::t('trinitytv', 'Rows per page'), [
 							],
 							'title' => TrinitytvModule::t('trinitytv', 'Add Playlist'),
 						]);
-						$buttonCount = $model['devicescount'];
+						$buttonCount = Html::tag('span', $model['devicescount'], ['id' => 'devicescount-'.$model['localid']]);
 						return Html::tag('div', implode('', $button), ['class' => 'btn-group']).' '.$buttonCount;
 					},
 				],
