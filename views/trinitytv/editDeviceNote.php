@@ -23,7 +23,7 @@ $js = <<< JS
 $(document).on('beforeSubmit', '#edit-device-note', function() {
 	let form = $(this),
 		modal = $('#modal-trinitytv');
-		modal.find('.modal-body').html('...');
+	modal.find('.modal-body').html('...');
 	$.ajax({
 		url : form.attr('action')+'&submit=true',
 		type: form.attr('method'),
