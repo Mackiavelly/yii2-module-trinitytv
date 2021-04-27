@@ -52,6 +52,7 @@ return [
 	'Show Full User Info'                                => 'Полная информация по пользователю',
 	'Add Playlist'                                       => 'Добавить плэйлист',
 	'Playlist'                                           => 'Плэйлист',
+	'Login Code'                                         => 'Код браузера',
 	'Balance'                                            => 'Баланс',
 	'Note'                                               => 'Заметки',
 	'Last Session Date'                                  => 'Последняя активность',
@@ -61,4 +62,5 @@ return [
 	'Delete'                                             => 'Удалить',
 	'Edit Note'                                          => 'Изменить заметку',
 	'Are you sure you want to delete this item?'         => 'Вы уверены, что хотите удалить данный элемент?',
+
 ];

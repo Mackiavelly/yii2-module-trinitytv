@@ -34,6 +34,7 @@ class Trinitytv extends Model {
 	public $lastname;
 	public $address;
 	public $balance;
+	public $login_code;
 	public $perpage = 10;
 
 	private $_filtered = false;
@@ -56,7 +57,7 @@ class Trinitytv extends Model {
 		return [
 			[['contractdate', 'localid', 'contracttrinity', 'subscrprice', 'subscrname', 'subscrstatus'], 'string'],
 			[['subscrid', 'subscrstatusid', 'devicescount', 'perpage'], 'integer'],
-			[['devices', 'last_session_date', 'note', 'middlename', 'name', 'lastname', 'address', 'balance'], 'safe'],
+			[['devices', 'last_session_date', 'note', 'middlename', 'name', 'lastname', 'address', 'balance', 'login_code'], 'safe'],
 		];
 	}
 
@@ -93,7 +94,7 @@ class Trinitytv extends Model {
 					if (isset($value[$attribute])) {
 						if (in_array($attribute, ['subscrid', 'subscrstatusid', 'devicescount']) && ($search != null)) {
 							$conditions[] = (int) $value[$attribute] == (int) $search;
-						} else if (!empty($search)) {
+						} elseif (!empty($search)) {
 							$conditions[] = strpos($value[$attribute], $search) !== false;
 						}
 					}
@@ -155,6 +156,7 @@ class Trinitytv extends Model {
 			'lastname'          => TrinitytvModule::t('trinitytv', 'Last Name'),
 			'address'           => TrinitytvModule::t('trinitytv', 'Address'),
 			'balance'           => TrinitytvModule::t('trinitytv', 'Balance'),
+			'login_code'        => TrinitytvModule::t('trinitytv', 'Login Code'),
 		];
 	}
 

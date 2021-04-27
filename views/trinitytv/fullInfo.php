@@ -28,6 +28,7 @@ echo DetailView::widget([
 		'last_session_date',
 		'middlename',
 		'name',
+		'login_code',
 		[
 			'attribute' => 'lastname',
 			'format'    => 'raw',
