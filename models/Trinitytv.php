@@ -166,7 +166,7 @@ class Trinitytv extends Model {
 		if ($response['result'] == 'success') {
 			$this->load($response['subscriptions'], '');
 			if ($this->devicescount != 0) {
-				$response = $trinityApi->deviceList($this->localid);
+				$response = $trinityApi->fulldeviceList($this->localid);
 				if ($response['result'] == 'success') {
 					$this->devices = $response['devices'];
 				}
